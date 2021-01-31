@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "FIPvva3yTzYxKZI+3rbkBrurjxzdSNSM4Qn/lUJLT8D9M6aKEUeTm5JGkT+kEAZLCAKh+R+cV+8fc7jHAxJ/hw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\skids\\Git\\SimProject\\Lono\\Lono.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\skids\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\skids\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512",
+    "C:\\Users\\skids\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
