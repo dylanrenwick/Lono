@@ -11,18 +11,16 @@ namespace Lono.MonoGame
     public class MonoGameRenderWrapper : IRenderWrapper
     {
         private SpriteBatch innerRenderer;
-        private SpriteBatch textRenderer;
         private GraphicsDevice graphics;
 
         private SpriteFont defaultFont;
 
         public Lono.Data.Vector2 CameraOffset { get; set; }
 
-        public MonoGameRenderWrapper(GraphicsDevice g, SpriteFont defaultFont, SpriteBatch sb = null, SpriteBatch tsb = null)
+        public MonoGameRenderWrapper(GraphicsDevice g, SpriteFont defaultFont, SpriteBatch sb = null)
         {
             graphics = g;
             innerRenderer = sb ?? new SpriteBatch(g);
-            textRenderer = tsb ?? new SpriteBatch(g);
 
             this.defaultFont = defaultFont;
 
@@ -50,7 +48,11 @@ namespace Lono.MonoGame
 
         public void DrawText(string text, Lono.Data.Vector2 pos)
         {
-            textRenderer.DrawString(defaultFont, text, LonoVectorToXNAVector(pos + CameraOffset), Color.White);
+            innerRenderer.End();
+            innerRenderer.Begin();
+            innerRenderer.DrawString(defaultFont, text, LonoVectorToXNAVector(pos + CameraOffset), Color.White);
+            innerRenderer.End();
+            BeginCall();
         }
         public void DrawText(string text, Lono.Data.Vector2 pos, Lono.Data.Vector2 bounds)
         {
@@ -90,7 +92,11 @@ namespace Lono.MonoGame
                     }
                 }
 
-                textRenderer.DrawString(defaultFont, sb.ToString().Trim(), LonoVectorToXNAVector(pos + CameraOffset + new Lono.Data.Vector2(0, y)), Color.White);
+                innerRenderer.End();
+                innerRenderer.Begin();
+                innerRenderer.DrawString(defaultFont, sb.ToString().Trim(), LonoVectorToXNAVector(pos + CameraOffset + new Lono.Data.Vector2(0, y)), Color.White);
+                innerRenderer.End();
+                BeginCall();
                 textOffset += sb.Length;
                 sb.Clear();
 
@@ -101,6 +107,11 @@ namespace Lono.MonoGame
         public void FillRect(Lono.Data.Vector2 pos, Lono.Data.Vector2 size, Lono.Data.Color color)
         {
             innerRenderer.FillRectangle(RectangleFromLonoVectors(pos + CameraOffset, size), new Color(color.R, color.G, color.B, color.A));
+        }
+
+        public void BeginCall()
+        {
+            innerRenderer.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
         }
 
         private Texture2D SpriteAssetToTexture2D(SpriteAsset asset)
