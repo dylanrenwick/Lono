@@ -13,10 +13,8 @@ using Box2D.NetStandard.Dynamics.Fixtures;
 
 namespace Lono.Box2D.Systems
 {
-    public class Box2DSystem : Lono.Data.System
+    public class Box2DSystem : Box2DPhysicsSystem
     {
-        private World physicsWorld;
-
         private int velocityIterations;
         private int positionIterations;
 
@@ -34,6 +32,7 @@ namespace Lono.Box2D.Systems
             if (bodyComponent.RigidBody == null)
             {
                 bodyComponent.RigidBody = CreateBody(transform.Position);
+                bodyComponent.RigidBody.SetUserData(bodyComponent.ID);
             }
 
             List<Box2DShapeComponent> shapes = entity.GetComponents<Box2DShapeComponent>("b2d_shape");
@@ -60,9 +59,8 @@ namespace Lono.Box2D.Systems
         }
 
         public Box2DSystem(World? world = null, int velIters = 8, int posIters = 3)
+            :base(world)
         {
-            physicsWorld = world ?? new World();
-
             velocityIterations = velIters;
             positionIterations = posIters;
         }
