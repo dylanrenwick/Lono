@@ -59,7 +59,7 @@ namespace Lono.Box2D.Systems
             }
         }
 
-        public Box2DSystem(World? world, int velIters = 8, int posIters = 3)
+        public Box2DSystem(World? world = null, int velIters = 8, int posIters = 3)
         {
             physicsWorld = world ?? new World();
 
