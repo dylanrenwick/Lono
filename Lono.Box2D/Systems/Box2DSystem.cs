@@ -55,13 +55,13 @@ namespace Lono.Box2D.Systems
                 Box2DBodyComponent bodyComponent = entity.GetComponents<Box2DBodyComponent>("b2d_body").First();
                 TransformComponent transform = entity.GetComponents<TransformComponent>("core_transform").First();
 
-                transform.Position = Util.Box2DVecToLonoVec(bodyComponent.RigidBody.GetPosition());
+                transform.Position = Util.NetVecToLonoVec(bodyComponent.RigidBody.GetPosition());
             }
         }
 
-        public Box2DSystem(World world, int velIters = 8, int posIters = 3)
+        public Box2DSystem(World? world, int velIters = 8, int posIters = 3)
         {
-            physicsWorld = world;
+            physicsWorld = world ?? new World();
 
             velocityIterations = velIters;
             positionIterations = posIters;
@@ -71,7 +71,7 @@ namespace Lono.Box2D.Systems
         {
             BodyDef bodyDef = new BodyDef()
             {
-                position = Util.LonoVecToBox2DVec(pos),
+                position = Util.LonoVecToNetVec(pos),
                 type = BodyType.Dynamic
             };
             return CreateBody(bodyDef);
