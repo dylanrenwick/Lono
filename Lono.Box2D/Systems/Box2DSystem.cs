@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using Lono.Data;
 using Lono.Core.Components;
 using Lono.Box2D.Components;
 
-using Box2DX.Dynamics;
+using Box2D.NetStandard.Collision.Shapes;
+using Box2D.NetStandard.Dynamics.World;
+using Box2D.NetStandard.Dynamics.Bodies;
+using Box2D.NetStandard.Dynamics.Fixtures;
 
 namespace Lono.Box2D.Systems
 {
@@ -21,6 +25,24 @@ namespace Lono.Box2D.Systems
             return entity.HasComponent("b2d_body");
         }
 
+        public override void AddEntity(Entity entity)
+        {
+            base.AddEntity(entity);
+
+            Box2DBodyComponent bodyComponent = entity.GetComponents<Box2DBodyComponent>("b2d_body").First();
+            TransformComponent transform = entity.GetComponents<TransformComponent>("core_transform").First();
+            if (bodyComponent.RigidBody == null)
+            {
+                bodyComponent.RigidBody = CreateBody(transform.Position);
+            }
+
+            List<Box2DShapeComponent> shapes = entity.GetComponents<Box2DShapeComponent>("b2d_shape");
+            foreach (Box2DShapeComponent shape in shapes)
+            {
+                AddShapeToBody(bodyComponent.RigidBody, shape.CollisionShape);
+            }
+        }
+
         public override void Update(TimeSpan deltaTime, IRenderWrapper renderer, IInputWrapper input)
         {
             physicsWorld.Step((float)deltaTime.TotalMilliseconds, velocityIterations, positionIterations);
@@ -32,10 +54,7 @@ namespace Lono.Box2D.Systems
 
                 Box2DBodyComponent bodyComponent = entity.GetComponents<Box2DBodyComponent>("b2d_body").First();
                 TransformComponent transform = entity.GetComponents<TransformComponent>("core_transform").First();
-                if (bodyComponent.RigidBody == null)
-                {
-                    bodyComponent.RigidBody = CreateBody(transform.Position);
-                }
+
                 transform.Position = Util.Box2DVecToLonoVec(bodyComponent.RigidBody.GetPosition());
             }
         }
@@ -52,17 +71,23 @@ namespace Lono.Box2D.Systems
         {
             BodyDef bodyDef = new BodyDef()
             {
-                Position = Util.LonoVecToBox2DVec(pos),
+                position = Util.LonoVecToBox2DVec(pos),
+                type = BodyType.Dynamic
             };
             return CreateBody(bodyDef);
         }
         private Body CreateBody(BodyDef bodyDef)
         {
-            Body body = physicsWorld.CreateBody(bodyDef);
-            FixtureDef fixDef = new FixtureDef();
-            return body;
+            return physicsWorld.CreateBody(bodyDef);
         }
 
-        private 
+        private Fixture AddShapeToBody(Body body, Shape shape)
+        {
+            FixtureDef fixDef = new FixtureDef()
+            {
+                shape = shape
+            };
+            return body.CreateFixture(fixDef);
+        }
     }
 }

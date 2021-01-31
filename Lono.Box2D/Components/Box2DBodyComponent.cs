@@ -1,6 +1,6 @@
 ﻿using Lono.Data;
 
-using Box2DX.Dynamics;
+using Box2D.NetStandard.Dynamics.Bodies;
 
 namespace Lono.Box2D.Components
 {
@@ -14,14 +14,14 @@ namespace Lono.Box2D.Components
 
         public Vector2 Position
         {
-            get => Util.Box2DVecToLonoVec(RigidBody.GetPosition());
-            set { RigidBody.SetPosition(Util.LonoVecToBox2DVec(value)); }
+            get => Util.NetVecToLonoVec(RigidBody.GetPosition());
+            set { RigidBody.SetTransform(Util.LonoVecToNetVec(value), Angle); }
         }
         
         public float Angle
         {
             get => RigidBody.GetAngle();
-            set { RigidBody.SetAngle(value); }
+            set { RigidBody.SetTransform(Util.LonoVecToNetVec(Position), value); }
         }
     }
 }
