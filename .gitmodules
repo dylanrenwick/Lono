@@ -1,0 +1,3 @@
+[submodule "lib/box2d-netstandard"]
+	path = lib/box2d-netstandard
+	url = git@github.com:benukhanov/box2d-netstandard
